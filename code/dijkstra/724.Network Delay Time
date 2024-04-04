@@ -1,0 +1,39 @@
+import java.util.*
+
+class Solution {
+    fun solution(times: Array<IntArray>, n: Int, k: Int): Int {
+        val adj = mutableMapOf<Int, MutableList<Pair<Int, Int>>>()
+        //n nodes, labeled from 1 to n
+        val distance = IntArray(n + 1) { Integer.MAX_VALUE }
+
+        // Adjacency list 인접 리스트 방식으로 그래프 구현
+        for (time in times) {
+            adj.getOrPut(time[0], { mutableListOf() }).add(Pair(time[1], time[2]))
+        }
+
+        val pq = PriorityQueue<Pair<Int, Int>>(compareBy { it.second })
+        pq.add(Pair(k, 0))
+        distance[k] = 0
+
+        while (pq.isNotEmpty()) {
+            val current = pq.poll()
+            val to = current.first
+            val dis = current.second
+            if (dis > distance[to]) continue
+
+            for (next in adj[to] ?: mutableListOf()) {
+                val cost = next.second + dis
+                if (cost < distance[next.first]) {
+                    distance[next.first] = cost
+                    pq.add(Pair(next.first, cost))
+                }
+            }
+        }
+
+        var answer = Integer.MIN_VALUE
+        for (i in 1..n) {
+            answer = maxOf(answer, distance[i])
+        }
+        return if (answer == Integer.MAX_VALUE) -1 else answer
+    }
+}
