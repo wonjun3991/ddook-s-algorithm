@@ -13,7 +13,6 @@ class Solution {
 
         val pq = PriorityQueue<Pair<Int, Int>>(compareBy { it.second })
         pq.add(Pair(k, 0))
-        distance[k] = 0
 
         while (pq.isNotEmpty()) {
             val current = pq.poll()
@@ -23,7 +22,7 @@ class Solution {
 
             for (next in adj[to] ?: mutableListOf()) {
                 val cost = next.second + dis
-                if (cost < distance[next.first]) {
+                if (cost  < distance[next.first] INFINITY) {
                     distance[next.first] = cost
                     pq.add(Pair(next.first, cost))
                 }
