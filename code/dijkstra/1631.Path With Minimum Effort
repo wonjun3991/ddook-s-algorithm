@@ -1,0 +1,54 @@
+import java.util.*
+import kotlin.math.abs
+
+class Solution {
+    fun minimumEffortPath(heights: Array<IntArray>): Int {
+        val directions: List<Pair<Int, Int>> = listOf(1 to 0, -1 to 0, 0 to 1, 0 to -1)
+        val adj = mutableMapOf<Int, MutableList<Pair<Int, Int>>>()
+        val maxWidth = heights[0].size
+        val maxHeight = heights.size
+        val efforts = IntArray(maxWidth * maxHeight) { Int.MAX_VALUE }
+
+        for (h in heights.indices) {
+            for (w in heights[h].indices) {
+                directions.forEach { direction ->
+                    val height = h + direction.first
+                    val width = w + direction.second
+                    if (height < 0 || height >= maxHeight) {
+                        return@forEach
+                    }
+                    if (width < 0 || width >= maxWidth) {
+                        return@forEach
+                    }
+                    val index = h * maxWidth + w
+                    val toIndex = height * maxWidth + width
+                    val from = heights[h][w]
+                    val to = heights[height][width]
+                    val dis: Int = abs(from - to)
+                    adj.computeIfAbsent(index) { mutableListOf() }.add(dis to toIndex)
+                }
+            }
+        }
+
+
+        val pq = PriorityQueue<Pair<Int, Int>>(compareBy { it.first })
+        efforts[0] = 0
+        pq.add(Pair(0, 0))
+
+        while (pq.isNotEmpty()) {
+            val current = pq.poll()
+            val to = current.second
+            val currentEffort = current.first
+            if (currentEffort > efforts[to]) continue
+
+            for (next in adj[to] ?: mutableListOf()) {
+                val effort = Math.max(currentEffort, next.first)
+                if (effort  < efforts[next.second]) {
+                    efforts[next.second] = effort
+                    pq.add(Pair(effort, next.second))
+                }
+            }
+        }
+        return efforts[maxWidth * maxHeight - 1]
+    }
+}
