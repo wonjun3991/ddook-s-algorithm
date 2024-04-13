@@ -1,0 +1,12 @@
+import kotlin.math.min
+
+class Solution {
+    fun minCostClimbingStairs(cost: IntArray): Int {
+        val minCost = IntArray(cost.size + 1)
+
+        for (i in 2..cost.size) {
+            minCost[i] = min(minCost[i - 1] + cost[i - 1], minCost[i - 2] + cost[i - 2])
+        }
+        return minCost.last()
+    }
+}
