@@ -1,0 +1,29 @@
+class Solution {
+    var smallestString = ""
+
+    fun smallestFromLeaf(root: TreeNode?): String {
+        dfs(root, "")
+        return smallestString
+    }
+
+    fun dfs(treeNode: TreeNode?, currentString: String) {
+        if (treeNode == null) {
+            return
+        }
+        val concatString = (treeNode.`val` + 'a'.code).toChar() + currentString
+
+        if (treeNode.left == null && treeNode.right == null){
+            if(smallestString.isEmpty() || smallestString > concatString){
+                smallestString = concatString
+            }
+        }
+
+        dfs(treeNode.left, concatString)
+        dfs(treeNode.right, concatString)
+    }
+}
+
+class TreeNode(var `val`: Int) {
+    var left: TreeNode? = null
+    var right: TreeNode? = null
+}
