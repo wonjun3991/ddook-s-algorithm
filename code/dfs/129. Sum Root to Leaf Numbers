@@ -1,0 +1,28 @@
+class Solution {
+    var sum: Int = 0
+
+    fun sumNumbers(root: TreeNode?): Int {
+        dfs(root, "")
+        return sum
+    }
+
+    fun dfs(root: TreeNode?, currentNumbers: String) {
+        if (root == null) {
+            return
+        }
+
+        val concatNumbers = currentNumbers + root.`val`.toString()
+
+        if (root.left == null && root.right == null) {
+            sum += concatNumbers.toInt()
+        }
+
+        dfs(root.left, concatNumbers)
+        dfs(root.right, concatNumbers)
+    }
+}
+
+class TreeNode(var `val`: Int) {
+    var left: TreeNode? = null
+    var right: TreeNode? = null
+}
