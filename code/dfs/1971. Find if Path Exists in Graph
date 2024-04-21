@@ -1,0 +1,33 @@
+class Solution {
+    lateinit var edgesMap: MutableMap<Int, MutableList<Int>>
+
+    fun validPath(n: Int, edges: Array<IntArray>, source: Int, destination: Int): Boolean {
+        val localEdgeMaps = mutableMapOf<Int, MutableList<Int>>()
+
+        edges.forEach { edge ->
+            localEdgeMaps.getOrPut(edge.first())
+            { mutableListOf() }.add(edge.last())
+            localEdgeMaps.getOrPut(edge.last()) { mutableListOf() }.add(edge.first())
+        }
+
+        edgesMap = localEdgeMaps
+
+        return dfs(source, destination, BooleanArray(n) { false })
+    }
+
+    fun dfs(root: Int, destination: Int, visited: BooleanArray): Boolean {
+        if (root == destination) {
+            return true
+        }
+
+        if(!visited[root]){
+            visited[root] = true
+            edgesMap[root]?.forEach {
+                if (dfs(it, destination, visited)) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+}
