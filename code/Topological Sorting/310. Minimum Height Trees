@@ -1,0 +1,41 @@
+class Solution {
+    fun findMinHeightTrees(n: Int, edges: Array<IntArray>): List<Int> {
+        if(n < 2){
+            val array = IntArray(n)
+            for(i in 0 until n ){
+                array[i] = i
+            }
+
+            return array.toList()
+        }
+
+        val neighbors:Array<MutableSet<Int>> = Array(n) { mutableSetOf() }
+
+        edges.forEach {
+            neighbors[it.first()].add(it.last())
+            neighbors[it.last()].add(it.first())
+        }
+
+        var leaves: MutableList<Int> = mutableListOf()
+        for(i in neighbors.indices){
+            if(neighbors[i].size == 1){
+                leaves.add(i)
+            }
+        }
+
+        var remainingNodes = n
+        while(remainingNodes > 2){
+            remainingNodes -= leaves.size
+            val newLeaves: MutableList<Int> = mutableListOf()
+            leaves.forEach{leaf ->
+                val neighbor = neighbors.get(leaf).first()
+                neighbors.get(neighbor).remove(leaf)
+                if(neighbors.get(neighbor).size == 1){
+                    newLeaves.add(neighbor)
+                }
+            }
+            leaves = newLeaves
+        }
+        return leaves
+    }
+}
